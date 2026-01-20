@@ -2,14 +2,23 @@ import React, { useState } from 'react'
 import {Search} from 'lucide-react'
 import Center from './Center'
 import Cards from './Cards'
-
+import Popup from './Popup'
 
 
 
 const Maindiv = () => {
   
 const [text, settext] = useState('')
-const [Data, setData] = useState({})
+const [Data, setData] = useState(()=>{
+ const value=localStorage.getItem('name')
+ return value?JSON.parse(value):{}
+})
+
+const [error, seterror] = useState(Data.cod)
+//console.log(error);
+
+
+
 
 async function preventLoad(e) {
   e.preventDefault();
@@ -24,14 +33,17 @@ async function preventLoad(e) {
     //let name="Mumbai"
      const response= await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${name}&appid=${api_key}`)
      const data= await response.json();
-     console.log(data);
-     setData(data);
-     //setApidata(data);
+     const value=JSON.stringify(data)
+     localStorage.setItem('name',value)
+     const get_value=JSON.parse(localStorage.getItem('name'))
+     console.log(get_value);
+     
+     setData(get_value);
    }
 
 
   return (
-    <div className="h-[90vh] w-[40%] bg-amber-200 rounded-2xl p-3 blur-[0.5px]">
+    <div className="h-[90vh] w-[40%] bg-amber-200 rounded-2xl p-3 blur-[0.5px] relative">
         <div className="p-3 pb-10 ">
             <form className='gap-2.5 flex'>
 
@@ -49,7 +61,11 @@ async function preventLoad(e) {
        <Cards Main_data={Data} />
        
        </div>
+       <div className="absolute top-[40%] left-[30%] ">
+        {/*  <Popup/> */}
+           
 
+       </div>
     </div>
   )
 }
